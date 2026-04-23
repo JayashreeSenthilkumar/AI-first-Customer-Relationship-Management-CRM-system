@@ -1,3 +1,5 @@
+from app.core.database import Base, engine
+Base.metadata.create_all(bind=engine)
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional

@@ -7,5 +7,6 @@ class Interaction(Base):
     id = Column(Integer, primary_key=True, index=True)
     hcp_name = Column(String)
     topic = Column(String)
-    follow_up = Column(String)
     summary = Column(String)
+    follow_up = Column(String)
+    interaction_date = Column(String)

@@ -1,40 +1,36 @@
+import os
+from dotenv import load_dotenv
 from groq import Groq
 import json
 
-client = Groq(api_key="YOUR_GROQ_API_KEY")
+# Load .env
+load_dotenv()
 
-def extract_interaction_data(text: str):
+# Get API key
+api_key = os.getenv("GROQ_API_KEY")
+
+# Initialize client
+client = Groq(api_key=api_key)
+
+
+def extract_data(text):
     prompt = f"""
-    Extract structured CRM interaction data from the text.
-
-    Text: "{text}"
-
-    Return JSON only with:
-    - hcp_name
-    - topic
-    - follow_up
-
-    Example:
-    {{
-      "hcp_name": "Dr. Ravi",
-      "topic": "diabetes discussion",
-      "follow_up": "next week"
-    }}
+    Extract:
+    hcp_name, topic, follow_up
+    from: {text}
+    Return JSON only
     """
 
-    response = client.chat.completions.create(
+    res = client.chat.completions.create(
         model="gemma2-9b-it",
         messages=[{"role": "user", "content": prompt}]
     )
 
-    output = response.choices[0].message.content
-
     try:
-        return json.loads(output)
+        return json.loads(res.choices[0].message.content)
     except:
-        # fallback if LLM returns messy text
         return {
             "hcp_name": "Unknown",
             "topic": text,
-            "follow_up": None
+            "follow_up": ""
         }
